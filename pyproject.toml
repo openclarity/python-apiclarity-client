@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "apiclarity"
+version = "0.1.0"
+description = "Client python package for interaction with APIClarity."
+readme = "README.md"
+license = "Apache-2.0"
+authors = ["Jeff Napper <jenapper@cisco.com>"]
+homepage = "https://github.com/jnapper7/python-apiclarity-client"
+repository = "https://github.com/jnapper7/python-apiclarity-client"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pydantic = {extras = ["dotenv"], version = "^1.9.1"}
+requests = "^2.28.1"
+
+[tool.poetry.dev-dependencies]
+pre-commit = "^2.20.0"
+pytest = "^7.1.2"
+pytest-docker-tools = "^3.1.3"
+ujson = "^5.4.0"
+pytest-dotenv = "^0.5.2"
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.mypy]
+plugins = "pydantic.mypy"
+follow_imports = "silent"
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_any_generics = true
+check_untyped_defs = true
+no_implicit_reexport = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true
+
+[tool.pytest.ini_options]
+env_files = "tests/.env"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
