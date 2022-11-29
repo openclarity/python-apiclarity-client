@@ -5,8 +5,8 @@ description = "Client python package for interaction with APIClarity."
 readme = "README.md"
 license = "Apache-2.0"
 authors = ["Jeff Napper <jenapper@cisco.com>"]
-homepage = "https://github.com/jnapper7/python-apiclarity-client"
-repository = "https://github.com/jnapper7/python-apiclarity-client"
+homepage = "https://github.com/openclarity/python-apiclarity-client"
+repository = "https://github.com/openclarity/python-apiclarity-client"
 
 [tool.poetry.dependencies]
 python = "^3.9"

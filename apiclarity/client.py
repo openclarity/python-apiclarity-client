@@ -20,7 +20,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import requests
-from pydantic import AnyHttpUrl, BaseSettings, Field
+from pydantic import AnyHttpUrl, BaseSettings, Field, parse_obj_as
 
 from .schemas import (
     ApiCount,
@@ -52,15 +52,15 @@ class ClientSettings(BaseSettings):
     )
 
     apiclarity_endpoint: Optional[AnyHttpUrl] = Field(
-        AnyHttpUrl("http://apiclarity:8080"),
+        parse_obj_as(AnyHttpUrl, "http://apiclarity:8080"),
         description="APIClarity service API endpoint.",
     )
     telemetry_endpoint: Optional[AnyHttpUrl] = Field(
-        AnyHttpUrl("http://apiclarity:9000"),
+        parse_obj_as(AnyHttpUrl, "http://apiclarity:9000"),
         description="APIClarity telemetry (trace) API endpoint.",
     )
     health_endpoint: Optional[AnyHttpUrl] = Field(
-        AnyHttpUrl("http://apiclarity:8081"),
+        parse_obj_as(AnyHttpUrl, "http://apiclarity:8081"),
         description="APIClarity health API endpoint.",
     )
 
