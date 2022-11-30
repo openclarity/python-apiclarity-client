@@ -210,7 +210,7 @@ class OpenAPI2(BaseModel):
         extra = Extra.allow
 
 
-class OASSever(BaseModel):
+class OASServer(BaseModel):
     url: str = Field(description="")
     description: Optional[str] = Field(None, description="")
     # variables: Optional[Dict[str,OASServerVariable]] = Field(None, description="")
@@ -223,14 +223,14 @@ class OpenAPI3(BaseModel):
     info: Info = Field(description="")
     openapi: str = Field(description="")
     jsonSchemaDialect: Optional[AnyUrl] = Field(None, description="")
-    servers: List[OASSever] = Field([OASSever(url="/")], description="")
+    servers: List[OASServer] = Field([OASServer(url="/")], description="")
     tags: Optional[List[OASTag]] = Field(None, description="")
     paths: Dict[str, Path3] = Field(description="")
 
     @validator("servers", pre=True)
     def servers_default_value(cls, v: Any) -> Any:
         if v is None or (isinstance(v, List) and len(v) == 0):
-            return [OASSever(url="/")]
+            return [OASServer(url="/")]
         else:
             return v
 
