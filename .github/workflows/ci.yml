@@ -1,15 +1,17 @@
-name: Test
+name: CI
 
 on:
   push:
-#    branches: [main]
-#  pull_request:
+    branches:
+      - '*'
+    tags:
+      - '*.*.*'
 
 env:
   FORCE_COLOR: 1
 
 jobs:
-  test:
+  ci:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -20,8 +22,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      # Note: config for poetry is in poetry.toml in package root dir
       - name: Install poetry
         run: pipx install "poetry==${{ matrix.poetry-version }}"
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -42,5 +47,16 @@ jobs:
       - name: Install package
         run: poetry install --no-interaction
 
-      - name: Tests
+      - name: Run tests
         run: poetry run pytest --capture=no
+
+      - name: Build package
+        if: ${{ github.ref_type == 'tag' }}
+        run: poetry build
+
+      - name: Publish tags to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        if: ${{ github.ref_type == 'tag' }}
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
