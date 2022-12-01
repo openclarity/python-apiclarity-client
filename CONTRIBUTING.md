@@ -21,7 +21,7 @@ Use poetry to install the dependencies in a local virtual environment, then run 
 
 ```sh
     $ poetry install
-    $ poetry run pytest
+    $ poetry run pytest -W error::UserWarning
 ```
 
 If you want the test framework to leave the containers running to read logs or inspect the containers or what have you, you can use the following command:

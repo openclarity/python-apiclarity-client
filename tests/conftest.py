@@ -50,6 +50,7 @@ apiclarity_server: wrappers.Container = container(
         "HEALTH_CHECK_ADDRESS": ":8081",  # go health checks
         "TRACE_SAMPLING_ENABLED": "false",  # do not use trace-sampling-manager
     },
+    timeout=60,
     volumes={
         os.getcwd() + "/tests/provided_spec": {"bind": "/provided_spec", "mode": "ro"},
     },
