@@ -4,7 +4,7 @@ default_language_version:
     python: python3.9
 repos:
     - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v4.3.0
+      rev: v4.4.0
       hooks:
           - id: trailing-whitespace
           - id: end-of-file-fixer
@@ -32,7 +32,7 @@ repos:
         - id: poetry-check
         #- id: poetry-lock
     - repo: https://github.com/PyCQA/flake8
-      rev: 3.9.2
+      rev: 6.0.0
       hooks:
           - id: flake8
             args: ["--max-line-length=88", "--extend-ignore=E203,F541", "--exclude=__init__.py"]
