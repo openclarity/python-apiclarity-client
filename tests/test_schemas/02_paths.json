@@ -1,0 +1,20 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Paths example",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/users": {
+      "summary": "A long summary",
+      "description": "A short description",
+      "get": {
+      }
+    },
+    "/pets": {
+      "$ref": "/reference/path",
+      "post": {
+      }
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Paths example",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": ["one", "two"],
+        "summary": "Get summary",
+        "description": "Another description",
+        "externalDocs": {
+          "url": "http://www.example.com"
+        },
+        "operationId": "id01",
+        "parameters": [{
+          "name": "param1",
+          "in": "header"
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Pet"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "This is required",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PetResp" }
+              }
+            }
+          }
+        },
+        "callbacks": {
+          "OnData" : { "somePattern" : {"$ref": "#/components/schemas/PetResp"}}
+        },
+        "deprecated": true,
+        "security": {
+          "api_key": []
+        },
+        "servers": {
+          "url": "server1.com"
+        }
+      }
+    }
+  }
+}

@@ -212,7 +212,7 @@ class OASOperation(BaseModel):
     parameters: Optional[List[Union[Parameter, Reference]]] = Field(
         None, description=""
     )
-    responses: Dict[str, OASResponse] = Field(description="")
+    responses: Optional[Dict[str, OASResponse]] = Field(None, description="")
     schemes: Optional[List[str]] = Field(None, description="")
     deprecated: bool = Field(False, description="")
     security: Optional[Dict[str, List[str]]] = Field(
@@ -395,10 +395,21 @@ class Path3(Path2):
     Reference: OpenAPI 3.1
     """
 
+    get: Optional[OASOperation3] = Field(None, description="")
+    put: Optional[OASOperation3] = Field(None, description="")
+    post: Optional[OASOperation3] = Field(None, description="")
+    delete: Optional[OASOperation3] = Field(None, description="")
+    options: Optional[OASOperation3] = Field(None, description="")
+    head: Optional[OASOperation3] = Field(None, description="")
+    patch: Optional[OASOperation3] = Field(None, description="")
+
     summary: Optional[str] = Field(None, description="")
     description: Optional[str] = Field(None, description="")
     trace: Optional[OASOperation3] = Field(None, description="")
     servers: Optional[List[OASServer]] = Field(None, description="")
+
+
+OASOperation3.update_forward_refs()
 
 
 class OASSecuritySchema(BaseModel):
