@@ -194,37 +194,6 @@ class OASTag(BaseModel):
     )
 
 
-class OASOperation(BaseModel):
-    """Describes a single API operation on a path.
-
-    Reference: OpenAPI 2.0 (Swagger)
-    """
-
-    tags: Optional[List[str]] = Field(None, description="")
-    summary: Optional[str] = Field(None, description="")
-    description: Optional[str] = Field(None, description="")
-    externalDocs: Optional[OASExternalDocument] = Field(
-        None, description="Additional external documentation for this operation."
-    )
-    operationId: Optional[str] = Field(None, description="")
-    consumes: Optional[List[str]] = Field(None, description="")
-    produces: Optional[List[str]] = Field(None, description="")
-    parameters: Optional[List[Union[Parameter, Reference]]] = Field(
-        None, description=""
-    )
-    responses: Optional[Dict[str, OASResponse]] = Field(None, description="")
-    schemes: Optional[List[str]] = Field(None, description="")
-    deprecated: bool = Field(False, description="")
-    security: Optional[Dict[str, List[str]]] = Field(
-        {},
-        description="A declaration of which security schemes are applied for"
-        " this operation",
-    )
-
-    class Config:
-        extra = Extra.allow
-
-
 class OASExample(BaseModel):
     """In all cases, the example value is expected to be compatible with the type
     schema of its associated value.
@@ -298,6 +267,19 @@ class OASMediaType(BaseModel):
     )
 
 
+class OASResponse3(OASResponse):
+    """Describes a single response from an API Operation, including design-time,
+    static links to operations based on the response.
+
+    Reference: OpenAPI 3.1
+    """
+
+    content: Optional[Dict[str, OASMediaType]] = Field(
+        None,
+        description="A map containing descriptions of potential response payloads.",
+    )
+
+
 class OASRequestBody(BaseModel):
     """Describes a single request body.
 
@@ -313,6 +295,38 @@ class OASRequestBody(BaseModel):
     required: bool = Field(
         False, description="Determines if the request body is required in the request."
     )
+
+
+class OASOperation(BaseModel):
+    """Describes a single API operation on a path.
+
+    Reference: OpenAPI 2.0 (Swagger)
+    """
+
+    tags: Optional[List[str]] = Field(None, description="")
+    summary: Optional[str] = Field(None, description="")
+    description: Optional[str] = Field(None, description="")
+    externalDocs: Optional[OASExternalDocument] = Field(
+        None, description="Additional external documentation for this operation."
+    )
+    operationId: Optional[str] = Field(None, description="")
+    consumes: Optional[List[str]] = Field(None, description="")
+    produces: Optional[List[str]] = Field(None, description="")
+    parameters: Optional[List[Union[Parameter, Reference]]] = Field(
+        None, description=""
+    )
+    # TODO: this was done due to mypy reporting typing issue.
+    responses: Optional[Dict[str, OASResponse3]] = Field(None, description="")
+    schemes: Optional[List[str]] = Field(None, description="")
+    deprecated: bool = Field(False, description="")
+    security: Optional[Dict[str, List[str]]] = Field(
+        {},
+        description="A declaration of which security schemes are applied for"
+        " this operation",
+    )
+
+    class Config:
+        extra = Extra.allow
 
 
 class OASLink(BaseModel):
@@ -387,6 +401,12 @@ class OASOperation3(OASOperation):
         description="A map of possible out-of band callbacks related"
         " to the parent operation",
     )
+    responses: Optional[Dict[str, OASResponse3]] = Field(
+        None, description="A container for the expected responses of an operation."
+    )
+    servers: Optional[OASServer] = Field(
+        None, description="An alternative server array to service this operation."
+    )
 
 
 class Path3(Path2):
@@ -409,6 +429,7 @@ class Path3(Path2):
     servers: Optional[List[OASServer]] = Field(None, description="")
 
 
+# Handling Path3 <-> OASOperation3 circular dependency
 OASOperation3.update_forward_refs()
 
 

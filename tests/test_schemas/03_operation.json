@@ -31,14 +31,14 @@
           "200": {
             "description": "This is required",
             "content": {
-              "application/json": {
+              "application/xml": {
                 "schema": { "$ref": "#/components/schemas/PetResp" }
               }
             }
           }
         },
         "callbacks": {
-          "OnData" : { "somePattern" : {"$ref": "#/components/schemas/PetResp"}}
+          "OnData" : { "somePattern" : {"$ref": "#/components/schemas/PetResp2"}}
         },
         "deprecated": true,
         "security": {
