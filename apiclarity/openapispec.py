@@ -254,7 +254,7 @@ class OASMediaType(BaseModel):
     """
 
     # TODO: because OASSchema was significantly refactored, we accept any for now
-    oas_schema: Optional[Any] = Field(
+    oas_schema: Optional[Union[Reference, Any]] = Field(
         None,
         alias="schema",
         description="The schema defining the content of the request,"
