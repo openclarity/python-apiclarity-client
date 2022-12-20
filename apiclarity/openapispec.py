@@ -118,9 +118,10 @@ class Info(Info2):
 
 
 class OASSchema(BaseModel):
+    # TODO: OASSchema3 needs to be redone
     ref: Optional[str] = Field(None, description="", alias="$ref")
     title: Optional[str] = Field(None, description="")
-    descriminator: Optional[str] = Field(None, description="")
+    discriminator: Optional[str] = Field(None, description="")
     description: Optional[str] = Field(None, description="")
     type: Union[List[OASSchemaType], OASSchemaType] = Field(
         OASSchemaType.STRING, description=""
@@ -252,18 +253,49 @@ class OASMediaType(BaseModel):
     Reference: OpenAPI 3.1
     """
 
-    oas_schema: Optional[OASSchema] = Field(
+    # TODO: because OASSchema was significantly refactored, we accept any for now
+    oas_schema: Optional[Any] = Field(
         None,
         alias="schema",
         description="The schema defining the content of the request,"
         " response, or parameter.",
     )
-    example: Optional[str] = Field(None, description="Example of the media type.")
+    example: Optional[Any] = Field(None, description="Example of the media type.")
     examples: Optional[Dict[str, Union[OASExample, Reference]]] = Field(
         None, description="Examples of the media type."
     )
     encoding: Optional[Dict[str, OASEncoding]] = Field(
         None, description="A map between a property name and its encoding information."
+    )
+
+
+class OASLink(BaseModel):
+    """The Link object represents a possible design-time link for a response.
+
+    Reference: OpenAPI 3.1
+    """
+
+    operationRef: Optional[str] = Field(
+        "", description="A relative or absolute URI reference to an OAS operation."
+    )
+    operationId: Optional[str] = Field(
+        "",
+        description="The name of an existing, resolvable OAS operation, as"
+        " defined with a unique operationId.",
+    )
+    parameters: Optional[Dict[str, str]] = Field(
+        None,
+        description="A map representing parameters to pass to an operation as"
+        " specified with operationId or identified via operationRef.",
+    )
+    requestBody: Optional[Any] = Field(
+        None,
+        description="A literal value or {expression} to use as a request body"
+        " when calling the target operation.",
+    )
+    description: Optional[str] = Field(None, description="A description of the link.")
+    server: Optional[OASServer] = Field(
+        None, description="A server object to be used by the target operation."
     )
 
 
@@ -277,6 +309,10 @@ class OASResponse3(OASResponse):
     content: Optional[Dict[str, OASMediaType]] = Field(
         None,
         description="A map containing descriptions of potential response payloads.",
+    )
+    links: Optional[Dict[str, Union[OASLink, Reference]]] = Field(
+        None,
+        description="A map of operations links that can be followed from the response.",
     )
 
 
@@ -327,36 +363,6 @@ class OASOperation(BaseModel):
 
     class Config:
         extra = Extra.allow
-
-
-class OASLink(BaseModel):
-    """The Link object represents a possible design-time link for a response.
-
-    Reference: OpenAPI 3.1
-    """
-
-    operationRef: Optional[str] = Field(
-        "", description="A relative or absolute URI reference to an OAS operation."
-    )
-    operationId: Optional[str] = Field(
-        "",
-        description="The name of an existing, resolvable OAS operation, as"
-        " defined with a unique operationId.",
-    )
-    parameters: Optional[Dict[str, str]] = Field(
-        None,
-        description="A map representing parameters to pass to an operation as"
-        " specified with operationId or identified via operationRef.",
-    )
-    requestBody: Optional[Any] = Field(
-        None,
-        description="A literal value or {expression} to use as a request body"
-        " when calling the target operation.",
-    )
-    description: Optional[str] = Field(None, description="A description of the link.")
-    server: Optional[OASServer] = Field(
-        None, description="A server object to be used by the target operation."
-    )
 
 
 class Path2(BaseModel):
@@ -645,6 +651,18 @@ class OpenAPI3(BaseModel):
     )
     components: Optional[OASComponents] = Field(
         None, description="An element to hold various schemas for the specification."
+    )
+    security: Optional[Dict[str, List[str]]] = Field(
+        {},
+        description="A declaration of which security schemes are applied"
+        " for this operation",
+    )
+    tags: Optional[List[OASTag]] = Field(
+        None,
+        description="A list of tags used by the document with" " additional metadata",
+    )
+    externalDocs: Optional[OASExternalDocument] = Field(
+        None, description="Additional external documentation"
     )
 
     @validator("servers", pre=True)

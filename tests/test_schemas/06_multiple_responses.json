@@ -1,0 +1,66 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Minimal example",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "This is required",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "discriminator": {
+                    "propertyName": "prop1",
+                    "mapping": {
+                      "k1": "v1"
+                    }
+                  }
+                },
+                "example": {"k1":"v11", "k2":"v22"},
+                "examples": {
+                  "dog": {
+                    "summary": "sum1",
+                    "description": "desc2",
+                    "value": "value1",
+                    "externalValue": "extValue1"
+                  }
+                },
+                "encoding": {
+                  "key1": {
+                    "contentType": "ct1",
+                    "headers": {},
+                    "style": "free",
+                    "explode": "True",
+                    "allowReserved": "True"
+                  }
+                }
+              }
+            },
+            "links": {
+              "one_link": {
+                "operationRef": "#/components/operations/1",
+                "operationId": "op_id_1",
+                "parameters": {
+                  "param1": "val1"
+                },
+                "requestBody": "val2",
+                "description": "Desc3",
+                "server": {
+                  "url": "cisco.com"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    }
+  }
+}

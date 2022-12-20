@@ -81,3 +81,77 @@ def test_operation():
     assert "#/components/schemas/PetResp2" == op.callbacks["OnData"]["somePattern"].ref
     assert ["api_key"] == list(op.security.keys())
     assert "server1.com" == op.servers.url
+
+
+def test_server():
+    fname_test_schema = "04_server.json"
+    with open(SCHEMA_PATH / fname_test_schema) as hnd:
+        test_schema = ujson.load(hnd)
+    model: OpenAPI3 = build_openapi_model(test_schema)
+
+    servers = model.servers
+    assert 3 == len(servers)
+    # server 1
+    assert "https://development.gigantic-server.com/v1" == servers[0].url
+    assert "Development server" == servers[0].description
+    # server 3
+    assert "https://api.gigantic-server.com/v1" == servers[2].url
+    assert "Production server" == servers[2].description
+    # variables
+    s3_vars = servers[2].variables
+    assert ["username", "port", "basePath"] == list(s3_vars.keys())
+    assert "demo" == s3_vars["username"].default
+    assert (
+        "this value is assigned by the service provider, in this example `gigantic-server.com`"
+        == s3_vars["username"].description
+    )
+    assert ["8443", "443"] == s3_vars["port"].oas_enum
+
+
+def test_tag_external_doc():
+    fname_test_schema = "05_tag_and_ext_doc.json"
+    with open(SCHEMA_PATH / fname_test_schema) as hnd:
+        test_schema = ujson.load(hnd)
+    model: OpenAPI3 = build_openapi_model(test_schema)
+
+    assert 2 == len(model.tags)
+    assert "pet" == model.tags[0].name
+    assert "Pets operations" == model.tags[0].description
+    assert "https://example.com" == model.tags[1].externalDocs.url
+    assert "Find more info here" == model.tags[1].externalDocs.description
+
+
+def test_response():
+    fname_test_schema = "06_multiple_responses.json"
+    with open(SCHEMA_PATH / fname_test_schema) as hnd:
+        test_schema = ujson.load(hnd)
+    model: OpenAPI3 = build_openapi_model(test_schema)
+
+    op_resp = model.paths["/users"].get.responses
+
+    assert ["200", "404"] == list(op_resp.keys())
+    assert "Not found" == op_resp["404"].description
+
+    assert ["application/json"] == list(op_resp["200"].content.keys())
+
+    assert ["one_link"] == list(op_resp["200"].links)
+    link = op_resp["200"].links["one_link"]
+
+    assert "#/components/operations/1" == link.operationRef
+    assert "op_id_1" == link.operationId
+    assert "val1" == link.parameters["param1"]
+    assert "val2" == link.requestBody
+    assert "Desc3" == link.description
+    assert isinstance(link.server, OASServer)
+    assert "cisco.com" == link.server.url
+
+    media_type = op_resp["200"].content["application/json"]
+    assert "v1" == media_type.oas_schema["discriminator"]["mapping"]["k1"]
+    assert "prop1" == media_type.oas_schema["discriminator"]["propertyName"]
+
+    assert "v11" == media_type.example["k1"]
+    assert "value1" == media_type.examples["dog"].value
+
+    assert "ct1" == media_type.encoding["key1"].contentType
+    assert True == media_type.encoding["key1"].explode
+    assert True == media_type.encoding["key1"].allowReserved
