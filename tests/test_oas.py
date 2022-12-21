@@ -155,3 +155,20 @@ def test_response():
     assert "ct1" == media_type.encoding["key1"].contentType
     assert True == media_type.encoding["key1"].explode
     assert True == media_type.encoding["key1"].allowReserved
+
+
+def test_apiclarity_spec():
+    fname_test_schema = "./tests/provided_spec/apiclarity.json"
+    with open(fname_test_schema) as hnd:
+        test_schema = ujson.load(hnd)
+    model: OpenAPI3 = build_openapi_model(test_schema)
+
+    assert model.openapi == "3.0.0"
+    # check random deep element of the spec
+    assert (
+        "integer"
+        == model.paths["/apiInventory"]
+        .get.responses["200"]
+        .content["application/json"]
+        .oas_schema["properties"]["total"]["type"]
+    )

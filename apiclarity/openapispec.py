@@ -352,7 +352,9 @@ class OASOperation(BaseModel):
         None, description=""
     )
     # TODO: this was done due to mypy reporting typing issue.
-    responses: Optional[Dict[str, OASResponse3]] = Field(None, description="")
+    responses: Optional[Dict[str, Union[OASResponse3, Reference]]] = Field(
+        None, description=""
+    )
     schemes: Optional[List[str]] = Field(None, description="")
     deprecated: bool = Field(False, description="")
     security: Optional[Dict[str, List[str]]] = Field(
@@ -407,7 +409,7 @@ class OASOperation3(OASOperation):
         description="A map of possible out-of band callbacks related"
         " to the parent operation",
     )
-    responses: Optional[Dict[str, OASResponse3]] = Field(
+    responses: Optional[Dict[str, Union[OASResponse3, Reference]]] = Field(
         None, description="A container for the expected responses of an operation."
     )
     servers: Optional[OASServer] = Field(
@@ -548,7 +550,9 @@ class OpenAPI2(BaseModel):
     paths: Dict[str, Path2] = Field(description="")
     definitions: Dict[str, OASSchema] = Field({}, description="")
     parameters: Optional[Dict[str, Parameter]] = Field(None, description="")
-    responses: Optional[Dict[str, OASResponse]] = Field(None, description="")
+    responses: Optional[Dict[str, Union[OASResponse, Reference]]] = Field(
+        None, description=""
+    )
     securityDefinitions: Optional[Dict[str, OASSecuritySchema]] = Field(
         {},
         description="A declaration of the security schemes available"
