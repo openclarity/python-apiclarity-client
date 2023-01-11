@@ -15,7 +15,7 @@
 
 import re
 from enum import Enum
-from typing import Any, Dict, Generator, List, Literal, Optional, Tuple, Union
+from typing import Any, Dict, Generator, List, Optional, Tuple, Union
 
 # import openapi_spec_validator
 from pydantic import AnyUrl, BaseModel, Extra, Field, InvalidDiscriminator, validator
@@ -441,25 +441,41 @@ class Path3(Path2):
 OASOperation3.update_forward_refs()
 
 
+class OASSecuritySchemaType(str, Enum):
+    BASIC = "basic"
+    API_KEY = "apiKey"
+    OAUTH2 = "oauth2"
+
+
+class OASSecuritySchemaIn(str, Enum):
+    QUERY = "query"
+    HEADER = "header"
+
+
+class OASSecuritySchemaOASFlow(str, Enum):
+    IMPLICIT = "implicit"
+    PASSWORD = "password"
+    APPLICATION = "application"
+    ACCESS_CODE = "accessCode"
+
+
 class OASSecuritySchema(BaseModel):
     """Allows the definition of a security scheme that can be used by the operations.
 
     Reference: OpenAPI 2.0
     """
 
-    type: Literal["basic", "apiKey", "oauth2"] = Field(
-        description="The type of the security scheme."
-    )
+    type: OASSecuritySchemaType = Field(description="The type of the security scheme.")
     description: Optional[str] = Field(
         None, description="A short description for security scheme."
     )
     name: str = Field(
         description="The name of the header or query parameter to be used."
     )
-    oas_in: Literal["query", "header"] = Field(
+    oas_in: OASSecuritySchemaIn = Field(
         alias="in", description="The location of the API key."
     )
-    flow: Literal["implicit", "password", "application", "accessCode"] = Field(
+    flow: OASSecuritySchemaOASFlow = Field(
         description=" The flow used by the OAuth2 security scheme."
     )
     authorizationUrl: str = Field(
@@ -510,16 +526,28 @@ class OASOAuthFlows(BaseModel):
     )
 
 
+class OASSecuritySchema3Type(str, Enum):
+    API_KEY = "apiKey"
+    HTTP = "http"
+    MUTUAL_TLS = "mutualTLS"
+    OAUTH2 = "oauth2"
+    OPENID_CONNECT = "openIdConnect"
+
+
+class OASSecuritySchema3In(str, Enum):
+    QUERY = "query"
+    HEADER = "header"
+    COOKIE = "cookie"
+
+
 class OASSecuritySchema3(BaseModel):
     """Defines a security scheme that can be used by the operations.
 
     Reference: OpenAPI 3.1
     """
 
-    type: Literal["apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"] = Field(
-        description="The type of the security scheme."
-    )
-    oas_in: Literal["query", "header", "cookie"] = Field(
+    type: OASSecuritySchema3Type = Field(description="The type of the security scheme.")
+    oas_in: OASSecuritySchema3In = Field(
         alias="in", description="The location of the API key."
     )
     scheme: str = Field(
