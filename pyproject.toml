@@ -10,7 +10,7 @@ repository = "https://github.com/openclarity/python-apiclarity-client"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-pydantic = {extras = ["dotenv"], version = "^1.10.4"}
+pydantic = {extras = ["dotenv"], version = ">=1.10.4,<3.0.0"}
 requests = "^2.28.1"
 
 [tool.poetry.dev-dependencies]
